@@ -19,4 +19,4 @@ outputs:
     description: 'The extracted changelog section for the specified version.'
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'lib/index.js'
