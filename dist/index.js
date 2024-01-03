@@ -40,17 +40,22 @@ const DEFAULT_CHANGELOG_FILENAME = 'CHANGELOG';
 const MARKDOWN_EXTENSION = '.md';
 async function run() {
     try {
-        const versionPrefix = core.getInput(VERSION_PREFIX_INPUT, { required: true });
-        const version = core.getInput(VERSION_INPUT, { required: true });
-        let changelogPath = core.getInput(CHANGELOG_PATH_INPUT);
+        // const versionPrefix: string = core.getInput(VERSION_PREFIX_INPUT, { required: true });
+        // const version: string = core.getInput(VERSION_INPUT, { required: true });
+        // let changelogPath: string = core.getInput(CHANGELOG_PATH_INPUT);
+        const versionPrefix = '## Version ';
+        const version = '1.4.0';
+        let changelogPath = '/Users/nick.holden/GitHub/automation-conductor/CHANGELOG.md';
         if (!changelogPath) {
             changelogPath = findChangelogFilePath();
         }
         const changelogContent = fs.readFileSync(changelogPath, 'utf8');
-        core.info(`Changelog content:\n${changelogContent}`);
+        // core.info(`Changelog content:\n${changelogContent}`);
         const versionChangelog = extractChangelogForVersion(changelogContent, versionPrefix, version);
-        if (versionChangelog) {
-            core.setOutput('changelog', `Version: ${version}\nChangelog:\n${versionChangelog}`);
+        const slackChangelog = versionChangelog.replace(/\n/g, '\\\\n').replace(/"/g, '\\"').replace(/%0A/g, '\\n');
+        console.log(`slackChangelog: ${slackChangelog}`);
+        if (slackChangelog) {
+            core.setOutput('changelog', `Version: ${version}\\\\nChangelog:\\\\n${slackChangelog}`);
         }
         else {
             core.setFailed(`Version ${version} not found in ${changelogPath}.`);
@@ -79,7 +84,7 @@ function extractChangelogForVersion(changelogContent, versionPrefix, version) {
     const lines = changelogContent.split('\n');
     let versionIndex = lines.findIndex(line => line.startsWith(versionPrefix) && line.includes(version));
     if (versionIndex === -1) {
-        return null;
+        return '';
     }
     let changelog = '';
     versionIndex++; // Start reading lines after the version line.

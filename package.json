@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start:local": "node --inspect ./dist/index.js",
-    "build": "tsc",
-    "bundle": "ncc build lib/index.js -o dist",
-    "prepublishOnly": "npm run build && npm run bundle",
+    "bundle": "tsc && ncc build lib/index.js -o dist",
+    "prepublishOnly": "npm run bundle",
     "test": "jest"
   },
   "repository": {
