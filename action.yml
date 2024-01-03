@@ -1,0 +1,19 @@
+name: 'Changelog Version Extractor'
+description: 'Extracts the specified version and changelog details from a CHANGELOG file.'
+inputs:
+  version_prefix:
+    description: 'Prefix to identify the version section in the CHANGELOG.'
+    required: true
+  version:
+    description: 'The specific version to extract from the CHANGELOG.'
+    required: true
+  changelog_path:
+    description: 'Optional path to the CHANGELOG file.'
+    required: false
+    default: 'CHANGELOG.md'
+outputs:
+  changelog:
+    description: 'The extracted changelog section for the specified version.'
+runs:
+  using: 'node12'
+  main: 'index.js'
