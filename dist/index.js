@@ -41,10 +41,14 @@ const DEFAULT_CHANGELOG_FILENAME = 'CHANGELOG';
 const MARKDOWN_EXTENSION = '.md';
 async function run() {
     try {
-        const versionPrefix = core.getInput(VERSION_PREFIX_INPUT, { required: true });
-        const version = core.getInput(VERSION_INPUT, { required: true });
-        const encodeForSlack = core.getInput(ENCODE_FOR_SLACK) === 'true';
-        let changelogPath = core.getInput(CHANGELOG_PATH_INPUT);
+        // const versionPrefix: string = core.getInput(VERSION_PREFIX_INPUT, { required: true });
+        // const version: string = core.getInput(VERSION_INPUT, { required: true });
+        // const encodeForSlack: boolean = core.getInput(ENCODE_FOR_SLACK) === 'true';
+        // let changelogPath: string = core.getInput(CHANGELOG_PATH_INPUT);
+        const versionPrefix = '## Version ';
+        const version = '1.4.0';
+        const encodeForSlack = true;
+        let changelogPath = '/Users/nick.holden/GitHub/automation-conductor/CHANGELOG.md';
         if (!changelogPath) {
             changelogPath = findChangelogFilePath();
         }
@@ -91,10 +95,10 @@ function extractChangelogForVersion(changelogContent, versionPrefix, version, en
     }
     changelog = changelog.trim();
     if (encodeForSlack) {
-        let formatted = changelog.replace(/\n/g, '\\\\n')
+        let formatted = changelog.replace(/\n/g, '\\n')
             .replace(/"/g, '\\"')
-            .replace(/%0A/g, '\\\\n');
-        changelog = `Version: ${version}\\\\nChangelog:\\\\n${formatted}`;
+            .replace(/%0A/g, '\\n');
+        changelog = `Version: ${version}\\nChangelog:\\n${formatted}`;
     }
     return changelog;
 }
