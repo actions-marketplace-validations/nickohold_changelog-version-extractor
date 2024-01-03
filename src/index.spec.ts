@@ -3,7 +3,6 @@ import * as core from '@actions/core';
 import * as fs from 'fs';
 
 jest.mock('@actions/core', () => ({
-  ...jest.requireActual('@actions/core'),
   getInput: jest.fn(),
   setOutput: jest.fn(),
   setFailed: jest.fn(),

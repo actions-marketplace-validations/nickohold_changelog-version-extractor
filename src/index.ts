@@ -21,9 +21,10 @@ export async function run(): Promise<void> {
     const changelogContent = fs.readFileSync(changelogPath, 'utf8');
     core.info(`Changelog content:\n${changelogContent}`);
     const versionChangelog = extractChangelogForVersion(changelogContent, versionPrefix, version);
+    const slackChangelog = versionChangelog.replace(/\n/g, '\\n').replace(/"/g, '\\"');
 
-    if (versionChangelog) {
-      core.setOutput('changelog', `Version: ${version}\nChangelog:\n${versionChangelog}`);
+    if (slackChangelog) {
+      core.setOutput('changelog', `Version: ${version}\nChangelog:\n${slackChangelog}`);
     } else {
       core.setFailed(`Version ${version} not found in ${changelogPath}.`);
     }
@@ -46,12 +47,12 @@ function findChangelogFilePath(): string {
   throw new Error(`The default changelog file '${DEFAULT_CHANGELOG_FILENAME}' with or without '${MARKDOWN_EXTENSION}' extension was not found.`);
 }
 
-function extractChangelogForVersion(changelogContent: string, versionPrefix: string, version: string): string | null {
+function extractChangelogForVersion(changelogContent: string, versionPrefix: string, version: string): string {
   const lines = changelogContent.split('\n');
   let versionIndex = lines.findIndex(line => line.startsWith(versionPrefix) && line.includes(version));
 
   if (versionIndex === -1) {
-    return null;
+    return '';
   }
 
   let changelog = '';
