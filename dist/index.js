@@ -36,26 +36,27 @@ const fs = __importStar(__nccwpck_require__(7147));
 const VERSION_PREFIX_INPUT = 'version_prefix';
 const VERSION_INPUT = 'version';
 const CHANGELOG_PATH_INPUT = 'changelog_path';
+const ENCODE_FOR_SLACK = 'encode_for_slack';
 const DEFAULT_CHANGELOG_FILENAME = 'CHANGELOG';
 const MARKDOWN_EXTENSION = '.md';
 async function run() {
     try {
         // const versionPrefix: string = core.getInput(VERSION_PREFIX_INPUT, { required: true });
         // const version: string = core.getInput(VERSION_INPUT, { required: true });
+        // const encodeForSlack: boolean = core.getInput(ENCODE_FOR_SLACK) === 'true';
         // let changelogPath: string = core.getInput(CHANGELOG_PATH_INPUT);
         const versionPrefix = '## Version ';
         const version = '1.4.0';
+        const encodeForSlack = true;
         let changelogPath = '/Users/nick.holden/GitHub/automation-conductor/CHANGELOG.md';
         if (!changelogPath) {
             changelogPath = findChangelogFilePath();
         }
         const changelogContent = fs.readFileSync(changelogPath, 'utf8');
-        // core.info(`Changelog content:\n${changelogContent}`);
-        const versionChangelog = extractChangelogForVersion(changelogContent, versionPrefix, version);
-        const slackChangelog = versionChangelog.replace(/\n/g, '\\\\n').replace(/"/g, '\\"').replace(/%0A/g, '\\n');
-        console.log(`slackChangelog: ${slackChangelog}`);
-        if (slackChangelog) {
-            core.setOutput('changelog', `Version: ${version}\\\\nChangelog:\\\\n${slackChangelog}`);
+        const versionChangelog = extractChangelogForVersion(changelogContent, versionPrefix, version, encodeForSlack);
+        core.info(`Changelog content: ${versionChangelog}`);
+        if (versionChangelog) {
+            core.setOutput('changelog', versionChangelog);
         }
         else {
             core.setFailed(`Version ${version} not found in ${changelogPath}.`);
@@ -80,7 +81,7 @@ function findChangelogFilePath() {
     }
     throw new Error(`The default changelog file '${DEFAULT_CHANGELOG_FILENAME}' with or without '${MARKDOWN_EXTENSION}' extension was not found.`);
 }
-function extractChangelogForVersion(changelogContent, versionPrefix, version) {
+function extractChangelogForVersion(changelogContent, versionPrefix, version, encodeForSlack) {
     const lines = changelogContent.split('\n');
     let versionIndex = lines.findIndex(line => line.startsWith(versionPrefix) && line.includes(version));
     if (versionIndex === -1) {
@@ -92,7 +93,14 @@ function extractChangelogForVersion(changelogContent, versionPrefix, version) {
         changelog += lines[versionIndex] + '\n';
         versionIndex++;
     }
-    return changelog.trim();
+    changelog = changelog.trim();
+    if (encodeForSlack) {
+        let formatted = changelog.replace(/\n/g, '\\\\n')
+            .replace(/"/g, '\\"')
+            .replace(/%0A/g, '\\\\n');
+        changelog = `Version: ${version}\\\\nChangelog:\\\\n${formatted}`;
+    }
+    return changelog;
 }
 run();
 //# sourceMappingURL=index.js.map
