@@ -41,14 +41,10 @@ const DEFAULT_CHANGELOG_FILENAME = 'CHANGELOG';
 const MARKDOWN_EXTENSION = '.md';
 async function run() {
     try {
-        // const versionPrefix: string = core.getInput(VERSION_PREFIX_INPUT, { required: true });
-        // const version: string = core.getInput(VERSION_INPUT, { required: true });
-        // const encodeForSlack: boolean = core.getInput(ENCODE_FOR_SLACK) === 'true';
-        // let changelogPath: string = core.getInput(CHANGELOG_PATH_INPUT);
-        const versionPrefix = '## Version ';
-        const version = '1.4.0';
-        const encodeForSlack = true;
-        let changelogPath = '/Users/nick.holden/GitHub/automation-conductor/CHANGELOG.md';
+        const versionPrefix = core.getInput(VERSION_PREFIX_INPUT, { required: true });
+        const version = core.getInput(VERSION_INPUT, { required: true });
+        const encodeForSlack = core.getInput(ENCODE_FOR_SLACK) === 'true';
+        let changelogPath = core.getInput(CHANGELOG_PATH_INPUT);
         if (!changelogPath) {
             changelogPath = findChangelogFilePath();
         }
