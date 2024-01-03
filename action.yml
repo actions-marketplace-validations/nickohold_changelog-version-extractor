@@ -1,5 +1,8 @@
 name: 'Changelog Version Extractor'
 description: 'Extracts the specified version and changelog details from a CHANGELOG file.'
+branding:
+  icon: 'git-pull-request'
+  color: 'blue'
 inputs:
   version_prefix:
     description: 'Prefix to identify the version section in the CHANGELOG.'
