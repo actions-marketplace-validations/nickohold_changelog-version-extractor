@@ -30,6 +30,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = void 0;
 const core = __importStar(__nccwpck_require__(4247));
 const fs = __importStar(__nccwpck_require__(7147));
 const VERSION_PREFIX_INPUT = 'version_prefix';
@@ -39,12 +40,9 @@ const DEFAULT_CHANGELOG_FILENAME = 'CHANGELOG';
 const MARKDOWN_EXTENSION = '.md';
 async function run() {
     try {
-        // const versionPrefix: string = core.getInput(VERSION_PREFIX_INPUT, { required: true });
-        // const version: string = core.getInput(VERSION_INPUT, { required: true });
-        // let changelogPath: string = core.getInput(CHANGELOG_PATH_INPUT);
-        const versionPrefix = '## Version';
-        const version = '1.4.0';
-        let changelogPath = '/Users/nick.holden/GitHub/automation-conductor/CHANGELOG.md';
+        const versionPrefix = core.getInput(VERSION_PREFIX_INPUT, { required: true });
+        const version = core.getInput(VERSION_INPUT, { required: true });
+        let changelogPath = core.getInput(CHANGELOG_PATH_INPUT);
         if (!changelogPath) {
             changelogPath = findChangelogFilePath();
         }
@@ -67,6 +65,7 @@ async function run() {
         }
     }
 }
+exports.run = run;
 function findChangelogFilePath() {
     const possibleFilenames = [`${DEFAULT_CHANGELOG_FILENAME}${MARKDOWN_EXTENSION}`, DEFAULT_CHANGELOG_FILENAME];
     for (const filename of possibleFilenames) {
@@ -91,7 +90,6 @@ function extractChangelogForVersion(changelogContent, versionPrefix, version) {
     return changelog.trim();
 }
 run();
-console.log(`Changelog output: ${process.env['changelog']}`);
 //# sourceMappingURL=index.js.map
 
 /***/ }),

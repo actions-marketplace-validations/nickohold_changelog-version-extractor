@@ -4,9 +4,10 @@
   "description": "A GitHub Action for automatically extracting version information and changelog details from a specified CHANGELOG file. This action takes a version prefix and version string as inputs and outputs the corresponding changelog section.",
   "main": "index.js",
   "scripts": {
-    "start:local": "node --inspect ./lib/index.js",
+    "start:local": "node --inspect ./dist/index.js",
     "build": "tsc",
-    "prepublishOnly": "npm run build",
+    "bundle": "ncc build lib/index.js -o dist",
+    "prepublishOnly": "npm run build && npm run bundle",
     "test": "jest"
   },
   "repository": {
